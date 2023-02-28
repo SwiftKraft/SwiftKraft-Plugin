@@ -26,7 +26,7 @@ namespace SwiftKraft
 
 			if (int.TryParse(arguments.Array[1], out int i))
             {
-				if (i > 1 || i < 0)
+				if (i != 1 && i != 0)
                 {
 					response = "Must provide 1 (True) or 0 (False)! Usage: \"cv <1/0>\"";
 					return false;

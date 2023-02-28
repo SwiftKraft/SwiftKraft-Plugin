@@ -35,29 +35,68 @@ namespace SwiftKraft
 
             #region Register Custom Items
 
-            CustomItem.itemNameToItemId.Add("M4A1_S", 20);
-            CustomItem.itemNameToItemId.Add("M4A4", 20);
-            CustomItem.itemNameToItemId.Add("AN94", 20);
-            CustomItem.itemNameToItemId.Add("SG553", 20);
-            CustomItem.itemNameToItemId.Add("SSG08", 20);
-            CustomItem.itemNameToItemId.Add("USP", 30);
-            CustomItem.itemNameToItemId.Add("P2000", 30);
-            CustomItem.itemNameToItemId.Add("MP5SD", 21);
-            CustomItem.itemNameToItemId.Add("P90", 21);
-            CustomItem.itemNameToItemId.Add("MAC_10", 23);
-            CustomItem.itemNameToItemId.Add("GLOCK_17", 13);
-            CustomItem.itemNameToItemId.Add("CZ75", 23);
-            CustomItem.itemNameToItemId.Add("DEAGLE", 39);
-            CustomItem.itemNameToItemId.Add("AWP", 40);
-            CustomItem.itemNameToItemId.Add("M249", 24);
-            CustomItem.itemNameToItemId.Add("NOVA", 41);
-            CustomItem.itemNameToItemId.Add("XR87", 40);
-            CustomItem.itemNameToItemId.Add("ECHO_S", 40);
+            RegisterItem("M4A1_S", ItemType.GunE11SR, 2900);
+            RegisterItem("M4A4", ItemType.GunE11SR, 2900);
+            RegisterItem("AN94", ItemType.GunE11SR, 2900);
+            RegisterItem("SG553", ItemType.GunE11SR, 3100);
+            RegisterItem("SSG08", ItemType.GunE11SR, 1150);
+            RegisterItem("USP", ItemType.GunCOM18, 500);
+            RegisterItem("P2000", ItemType.GunCOM18, 550);
+            RegisterItem("MP5SD", ItemType.GunCrossvec, 1600);
+            RegisterItem("P90", ItemType.GunCrossvec, 1750);
+            RegisterItem("MAC_10", ItemType.GunFSP9, 950);
+            RegisterItem("CZ75", ItemType.GunFSP9, 900);
+            RegisterItem("GLOCK_17", ItemType.GunCOM15, 300);
+            RegisterItem("DEAGLE", ItemType.GunRevolver, 700);
+            RegisterItem("AWP", ItemType.GunAK, 4700);
+            RegisterItem("XR87", ItemType.GunAK, 4000);
+            RegisterItem("ECHO_S", ItemType.GunAK, 5200);
+            RegisterItem("M249", ItemType.GunLogicer, 3250);
+            RegisterItem("NOVA", ItemType.GunShotgun, 1150);
+            RegisterBuy("_26", 300);
+            RegisterBuy("_25", 500);
+            RegisterBuy("_14", 300);
+            RegisterBuy("_33", 600);
+            RegisterBuy("_34", 150);
+            RegisterBuy("_18", 1000);
+            RegisterBuy("_46", 800);
+            RegisterBuy("_32", 1400);
+            RegisterBuy("_31", 2000);
+            RegisterBuy("_36", 400);
+            RegisterBuy("_37", 1000);
+            RegisterBuy("_38", 1200);
             CustomItem.itemNameToItemId.Add("_FUNNY_GUN", 20);
             CustomItem.itemNameToItemId.Add("_GUARD_SPAWN", 4);
             CustomItem.itemNameToItemId.Add("_PROTO_MEDKIT", 14);
 
             #endregion
+        }
+
+        public void RegisterItem(string item, ItemType itemTypeId, int cost)
+        {
+            CustomItem.itemNameToItemId.Add(item.ToUpper(), (ushort)itemTypeId);
+            RegisterBuy(item.ToUpper(), cost);
+        }
+
+        public void RegisterBuy(string buy, int cost)
+        {
+            Buying.itemCosts.Add(buy.ToUpper(), cost);
+
+            if (buy.ToCharArray()[0] == '_')
+            {
+                if (!uint.TryParse(buy.Remove(0, 1), out uint i))
+                    return;
+
+                ItemType item = (ItemType)i;
+
+                Buying.translatedItemBuys.Add(buy.ToUpper(), item.ToString().ToUpper());
+                Buying.itemBuyTranslation.Add(item.ToString().ToUpper(), buy.ToUpper());
+            }
+            else
+            {
+                Buying.translatedItemBuys.Add(buy.ToUpper(), buy.ToUpper());
+                Buying.itemBuyTranslation.Add(buy.ToUpper(), buy.ToUpper());
+            }
         }
 
         [PluginEvent(ServerEventType.PlayerJoined)]
@@ -74,6 +113,14 @@ namespace SwiftKraft
 
             Log.Info(attacker.Nickname + " (" + attacker.Role.ToString() + ")" + " Killed " + victim.Nickname + " (" + victim.Role.ToString() + ")");
             attacker.SendBroadcast("You Killed " + victim.Nickname, 2, Broadcast.BroadcastFlags.Normal, true);
+
+            if (Buying.IsOn)
+            {
+                if (Buying.playerEco.ContainsKey(attacker.PlayerId))
+                    Buying.playerEco[attacker.PlayerId] += 300;
+                else
+                    Buying.playerEco.Add(attacker.PlayerId, 0);
+            }
 
             if (killTarget != 0)
             {
@@ -218,6 +265,7 @@ namespace SwiftKraft
             Log.Info("Round Restarting! Clearing Custom Item Entries! ");
 
             customItems.Clear();
+            Buying.playerEco.Clear();
         }
 
 /*        public class Config
@@ -248,14 +296,23 @@ Adds custom items and weapons to the game!
 
 ===========================
 
-Commands: 
+RA Commands: 
 
 - swiftkraft - Shows this message <3. Aliases: skabout, swftkft.
 - listcustomitem - Lists all registered custom items. Aliases: custlist, clist.
 - customitem <Custom Item Name> [Player Name/Player ID] - Gives custom item to you or a player. Aliases: custitem, citem, cust.
 - killtarget <Player Name/Player ID> - Sets kill target, killer of kill target will be broadcasted when kill target dies. Aliases: ktarget, target, kt.
 - conversion <1/0> - Turns on or off for conversion of custom items (spawn loadouts and pickups). Aliases: conv, cnvs, cv.
-- attachments - Displays the attachment combination number for your current weapon. Aliases: att, atch.
+- attachments - Displays the attachment combination serial number for your current weapon, mainly for ease of adding new weapons. Aliases: att, atch.
+- allowbuy <1/0> - Turns on and off economy and purchasing of weapons through the console. Aliases: buy, allowb.
+- cleareconomy - Clears everyone's money. Aliases: cleareco, cleco.
+- giveeconomy <Integer> [Player Name/Player ID] - Gives you or a player money. Aliases: giveeco, geco.
+- seteconomy <Integer> [Player Name/Player ID] - Sets you or a player's money. Aliases: seteco, seco.
+
+Client Commands:
+
+- .purchase [Item Name] - Shows a list of purchasable items or attempts to purchase an item if provided. Aliases: .pur.
+- .economy - Shows the amount of money you have. Aliases: .eco.
 
 ===========================
 ";
