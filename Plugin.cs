@@ -19,9 +19,6 @@ namespace SwiftKraft
 {
     public class Plugin
     {
-/*        [PluginConfig]
-        public Config cfg;*/
-
         public static readonly Dictionary<ushort, string> customItems = new Dictionary<ushort, string>();
         public static int killTarget;
 
@@ -111,7 +108,6 @@ namespace SwiftKraft
             if (attacker == null)
                 return;
 
-            Log.Info(attacker.Nickname + " (" + attacker.Role.ToString() + ")" + " Killed " + victim.Nickname + " (" + victim.Role.ToString() + ")");
             attacker.SendBroadcast("You Killed " + victim.Nickname, 2, Broadcast.BroadcastFlags.Normal, true);
 
             if (Buying.IsOn)
@@ -119,7 +115,7 @@ namespace SwiftKraft
                 if (Buying.playerEco.ContainsKey(attacker.PlayerId))
                     Buying.playerEco[attacker.PlayerId] += 300;
                 else
-                    Buying.playerEco.Add(attacker.PlayerId, 0);
+                    Buying.playerEco.Add(attacker.PlayerId, 300);
             }
 
             if (killTarget != 0)
@@ -163,12 +159,6 @@ namespace SwiftKraft
             if (!string.IsNullOrEmpty(message))
                 player.SendBroadcast(message, 3, Broadcast.BroadcastFlags.Normal, true);
         }
-
-/*        [PluginEvent(ServerEventType.ItemSpawned)]
-        public void OnItemSpawned(ItemType item, Vector3 position)
-        {
-            Log.Info("Item Spawned! Item: " + item.ToString());
-        }*/
 
         [PluginEvent(ServerEventType.PlayerDropItem)]
         public void OnPlayerDropItem(Player player, ItemBase item)
@@ -223,18 +213,6 @@ namespace SwiftKraft
             customItems.Remove(item.ItemSerial);
         }
 
-        /*[PluginEvent(ServerEventType.PlayerDryfireWeapon)]
-        public void OnPlayerDryfireWeapon(Player player, Firearm firearm)
-        {
-
-        }*/
-
-        /*[PluginEvent(ServerEventType.TeamRespawn)]
-        public void OnTeamRespawn(SpawnableTeamType spawnableTeamType)
-        {
-            
-        }*/
-
         [PluginEvent(ServerEventType.CassieAnnouncesScpTermination)]
         public void OnSCPAnnounced(Player scp, DamageHandlerBase damage, string announcement)
         {
@@ -267,11 +245,6 @@ namespace SwiftKraft
             customItems.Clear();
             Buying.playerEco.Clear();
         }
-
-/*        public class Config
-        {
-            public float CustomItemChance = 50f;
-        }*/
     }
 
     [CommandHandler(typeof(RemoteAdminCommandHandler))]

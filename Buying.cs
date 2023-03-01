@@ -249,7 +249,7 @@ namespace SwiftKraft
 
                 foreach (string n in Buying.translatedItemBuys.Values)
                 {
-                    response += "- " + n + "\n";
+                    response += "- " + n + "  - $" + Buying.itemCosts[Buying.itemBuyTranslation[n]].ToString();
                 }
 
                 if (Player.TryGet(sender, out Player _p) && Buying.playerEco.ContainsKey(_p.PlayerId))
@@ -292,7 +292,7 @@ namespace SwiftKraft
                         p.AddAmmo(ItemType.Ammo762x39, 200);
                         p.AddAmmo(ItemType.Ammo44cal, 200);
 
-                        response = "Purchased " + Buying.translatedItemBuys[Buying.itemBuyTranslation[arguments.Array[1].ToUpper()]] + "! ";
+                        response = "Purchased " + Buying.translatedItemBuys[Buying.itemBuyTranslation[arguments.Array[1].ToUpper()]] + "! \nCurrent Money: $" + Buying.playerEco[p.PlayerId];
 
                         return true;
                     }

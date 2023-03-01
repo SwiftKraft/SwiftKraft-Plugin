@@ -354,6 +354,14 @@ namespace SwiftKraft
 
                 if (victim.IsSCP)
                 {
+                    if (Buying.IsOn)
+                    {
+                        if (Buying.playerEco.ContainsKey(attacker.PlayerId))
+                            Buying.playerEco[attacker.PlayerId] += 10;
+                        else
+                            Buying.playerEco.Add(attacker.PlayerId, 10);
+                    }
+
                     switch (Plugin.customItems[attacker.CurrentItem.ItemSerial])
                     {
                         case "AWP":
