@@ -22,7 +22,7 @@ namespace SwiftKraft
         public static readonly Dictionary<ushort, string> customItems = new Dictionary<ushort, string>();
         public static int killTarget;
 
-        [PluginEntryPoint("SwiftKraft", "v1.0", "Powerful Guns", "SwiftKraft")]
+        [PluginEntryPoint("SwiftKraft", "v1.1", "Powerful Guns", "SwiftKraft")]
         public void Init()
         {
             EventManager.RegisterEvents<Plugin>(this);
@@ -261,7 +261,7 @@ namespace SwiftKraft
             response =
 
 @"
-===== SwiftKraft v1.0 =====
+===== SwiftKraft v1.1 =====
 
 Plugin Made By SwiftKraft! 
 
