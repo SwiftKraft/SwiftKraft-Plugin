@@ -2,6 +2,7 @@
 using CustomPlayerEffects;
 using InventorySystem.Items;
 using InventorySystem.Items.Pickups;
+using MapGeneration.Distributors;
 using PlayerRoles;
 using PlayerStatsSystem;
 using PluginAPI.Core;
@@ -22,6 +23,8 @@ namespace SwiftKraft
         public static readonly Dictionary<ushort, string> customItems = new Dictionary<ushort, string>();
         public static readonly Dictionary<int, int> kills = new Dictionary<int, int>();
         public static int killTarget;
+
+        public List<Scp079Generator> generators = new List<Scp079Generator>();
 
         [PluginEntryPoint("SwiftKraft", "v1.1", "Powerful Guns", "SwiftKraft")]
         public void Init()
@@ -113,6 +116,17 @@ namespace SwiftKraft
                     if (attacker != null)
                     {
                         Log.Info("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!");
+
+                        if (Buying.IsOn)
+                        {
+                            attacker.SendBroadcast("Killed Bounty Target: +$2000", 3);
+
+                            if (Buying.playerEco.ContainsKey(attacker.PlayerId))
+                                Buying.playerEco[attacker.PlayerId] += 2000;
+                            else
+                                Buying.playerEco.Add(attacker.PlayerId, 2000);
+                        }
+
                         foreach (Player p in Player.GetPlayers())
                             p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!", 3, Broadcast.BroadcastFlags.Normal, false);
                     }
@@ -170,6 +184,8 @@ namespace SwiftKraft
 
             if (Buying.IsOn)
             {
+                attacker.SendBroadcast("Kill: +$400", 3);
+
                 if (Buying.playerEco.ContainsKey(attacker.PlayerId))
                     Buying.playerEco[attacker.PlayerId] += 400;
                 else
@@ -293,7 +309,73 @@ namespace SwiftKraft
 
             customItems.Clear();
             kills.Clear();
+            generators.Clear();
             Buying.playerEco.Clear();
+        }
+
+        [PluginEvent(ServerEventType.LczDecontaminationStart)]
+        public void OnLczDecontaminationStarts()
+        {
+            if (Buying.IsOn)
+            {
+                Log.Info("Started LCZ Decontamination. Giving Economy. ");
+
+                foreach (Player p in Player.GetPlayers())
+                {
+                    p.SendBroadcast("LCZ Decontaminating: +$3000", 3);
+
+                    if (Buying.playerEco.ContainsKey(p.PlayerId))
+                        Buying.playerEco[p.PlayerId] += 3000;
+                    else
+                        Buying.playerEco.Add(p.PlayerId, 3000);
+                }
+            }
+        }
+
+        [PluginEvent(ServerEventType.PlayerActivateGenerator)]
+        public void OnPlayerActivateGenerator(Player plr, Scp079Generator gen)
+        {
+            if (Buying.IsOn && !plr.IsSCP)
+            {
+                if (!generators.Contains(gen))
+                {
+                    generators.Add(gen);
+
+                    plr.SendBroadcast("Activated Generator: +$1000", 3);
+
+                    if (Buying.playerEco.ContainsKey(plr.PlayerId))
+                        Buying.playerEco[plr.PlayerId] += 1000;
+                    else
+                        Buying.playerEco.Add(plr.PlayerId, 1000);
+
+                    foreach (Player p in Player.GetPlayers())
+                    {
+                        if (!p.IsAlive || p.Role.GetFaction() != plr.Role.GetFaction())
+                            continue;
+
+                        p.SendBroadcast("Team Activated Generator: +$2000", 3);
+
+                        if (Buying.playerEco.ContainsKey(p.PlayerId))
+                            Buying.playerEco[p.PlayerId] += 2000;
+                        else
+                            Buying.playerEco.Add(p.PlayerId, 2000);
+                    }
+                }
+            }
+        }
+
+        [PluginEvent(ServerEventType.PlayerUnlockGenerator)]
+        public void OnUnlockGenerator(Player plr, Scp079Generator generator)
+        {
+            if (Buying.IsOn)
+            {
+                plr.SendBroadcast("Unlocked Generator: +$400", 3);
+
+                if (Buying.playerEco.ContainsKey(plr.PlayerId))
+                    Buying.playerEco[plr.PlayerId] += 400;
+                else
+                    Buying.playerEco.Add(plr.PlayerId, 400);
+            }
         }
     }
 

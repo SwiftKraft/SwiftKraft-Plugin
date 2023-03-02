@@ -272,6 +272,13 @@ namespace SwiftKraft
 
             if (Player.TryGet(sender, out Player p) && Buying.playerEco.ContainsKey(p.PlayerId))
             {
+                if (p.IsSCP)
+                {
+                    response = "SCPs Cannot Buy! ";
+
+                    return false;
+                }
+
                 if (Buying.playerEco[p.PlayerId] >= Buying.itemCosts[Buying.itemBuyTranslation[arguments.Array[1].ToUpper()]])
                 {
                     if (p.IsInventoryFull)
