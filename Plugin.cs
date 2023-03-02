@@ -43,11 +43,11 @@ namespace SwiftKraft
             RegisterItem("MP5SD", ItemType.GunCrossvec, 1600);
             RegisterItem("P90", ItemType.GunCrossvec, 1750);
             RegisterItem("MAC_10", ItemType.GunFSP9, 950);
-            RegisterItem("CZ75", ItemType.GunFSP9, 900);
+            RegisterItem("CZ75", ItemType.GunFSP9, 450);
             RegisterItem("GLOCK_17", ItemType.GunCOM15, 300);
             RegisterItem("DEAGLE", ItemType.GunRevolver, 700);
             RegisterItem("AWP", ItemType.GunAK, 4700);
-            RegisterItem("XR87", ItemType.GunAK, 4000);
+            RegisterItem("XR87", ItemType.GunAK, 4200);
             RegisterItem("ECHO_S", ItemType.GunAK, 5200);
             RegisterItem("M249", ItemType.GunLogicer, 3250);
             RegisterItem("NOVA", ItemType.GunShotgun, 1150);
@@ -171,9 +171,9 @@ namespace SwiftKraft
             if (Buying.IsOn)
             {
                 if (Buying.playerEco.ContainsKey(attacker.PlayerId))
-                    Buying.playerEco[attacker.PlayerId] += 300;
+                    Buying.playerEco[attacker.PlayerId] += 400;
                 else
-                    Buying.playerEco.Add(attacker.PlayerId, 300);
+                    Buying.playerEco.Add(attacker.PlayerId, 400);
             }
         }
 
@@ -289,7 +289,7 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.RoundRestart)]
         public void OnRoundRestart()
         {
-            Log.Info("Round Restarting! Clearing Custom Item Entries! ");
+            Log.Info("Round Restarting! Clearing Custom Items and Economy! ");
 
             customItems.Clear();
             kills.Clear();
