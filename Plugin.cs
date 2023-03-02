@@ -227,10 +227,10 @@ namespace SwiftKraft
                     count++;
             }
 
-            Server.Instance.ReferenceHub.StartCoroutine(Announce(scp, damage, count));
+            Server.Instance.ReferenceHub.StartCoroutine(Announce(count));
         }
 
-        private IEnumerator Announce(Player scp, DamageHandlerBase damage, int count)
+        private IEnumerator Announce(int count)
         {
             yield return new WaitForSeconds(2f);
 
