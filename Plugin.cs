@@ -214,7 +214,7 @@ namespace SwiftKraft
             switch (customItems[player.CurrentItem.ItemSerial])
             {
                 case "_GUARD_SPAWN":
-                    message = "Equipped Guard Summon! (Drop to Use)";
+                    message = "Equipped Bodyguard Summon! (Drop to Use)";
                     break;
                 case "_PROTO_MEDKIT":
                     message = "Equipped Prototype Medkit! ";
@@ -246,7 +246,22 @@ namespace SwiftKraft
 
                 Player target = players[Random.Range(0, players.Count)];
 
-                target.SetRole(RoleTypeId.FacilityGuard);
+                switch (player.Role.GetFaction())
+                {
+                    case Faction.FoundationStaff:
+                        target.SetRole(RoleTypeId.NtfSergeant);
+                        break;
+                    case Faction.FoundationEnemy:
+                        target.SetRole(RoleTypeId.ChaosRifleman);
+                        break;
+                    case Faction.Unclassified:
+                        target.SetRole(RoleTypeId.FacilityGuard);
+                        break;
+                    case Faction.SCP:
+                        target.SetRole(RoleTypeId.Scp0492);
+                        break;
+                }
+
                 target.Position = player.Position;
                 target.SendBroadcast("You have been summoned by " + player.Nickname, 3, Broadcast.BroadcastFlags.Normal, true);
 
