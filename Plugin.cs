@@ -136,8 +136,11 @@ namespace SwiftKraft
                 case 7:
                     msg = "KILLING SPREE!!! ";
                     break;
+                case 8:
+                    msg = "UNSTOPPABLE!!! ";
+                    break;
                 default:
-                    if (kills[attacker.PlayerId] > 7)
+                    if (kills[attacker.PlayerId] > 8)
                         msg = "UNSTOPPABLE!!! x" + (kills[attacker.PlayerId] - 7);
                     break;
             }
