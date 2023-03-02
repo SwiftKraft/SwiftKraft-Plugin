@@ -20,6 +20,7 @@ namespace SwiftKraft
     public class Plugin
     {
         public static readonly Dictionary<ushort, string> customItems = new Dictionary<ushort, string>();
+        public static readonly Dictionary<int, int> kills = new Dictionary<int, int>();
         public static int killTarget;
 
         [PluginEntryPoint("SwiftKraft", "v1.1", "Powerful Guns", "SwiftKraft")]
@@ -108,7 +109,44 @@ namespace SwiftKraft
             if (attacker == null)
                 return;
 
-            attacker.SendBroadcast("You Killed " + victim.Nickname, 2, Broadcast.BroadcastFlags.Normal, true);
+            if (kills.ContainsKey(attacker.PlayerId))
+                kills[attacker.PlayerId]++;
+            else
+                kills.Add(attacker.PlayerId, 1);
+
+            string msg = "";
+
+            switch (kills[attacker.PlayerId])
+            {
+                case 2:
+                    msg = "DOUBLE KILL! ";
+                    break;
+                case 3:
+                    msg = "TRIPLE KILL! ";
+                    break;
+                case 4:
+                    msg = "QUADRAKILL! ";
+                    break;
+                case 5:
+                    msg = "PENTAKILL!! ";
+                    break;
+                case 6:
+                    msg = "ULTRAKILL!!! ";
+                    break;
+                case 7:
+                    msg = "KILLING SPREE!!! ";
+                    break;
+                default:
+                    if (kills[attacker.PlayerId] > 7)
+                        msg = "UNSTOPPABLE!!! ";
+                    break;
+            }
+
+            msg += $" ({kills[attacker.PlayerId]}) ";
+
+            attacker.SendBroadcast("You Killed " + victim.Nickname + "! " + msg, 2, Broadcast.BroadcastFlags.Normal, true);
+
+            attacker.ReferenceHub.StartCoroutine(KillCounter(attacker.PlayerId));
 
             if (Buying.IsOn)
             {
@@ -136,6 +174,16 @@ namespace SwiftKraft
                     }
                 }
             }
+        }
+
+        public IEnumerator KillCounter(int atk)
+        {
+            int c = kills[atk];
+
+            yield return new WaitForSeconds(7f);
+
+            if (c >= kills[atk])
+                kills[atk] = 0;
         }
 
         [PluginEvent(ServerEventType.PlayerChangeItem)]
@@ -243,6 +291,7 @@ namespace SwiftKraft
             Log.Info("Round Restarting! Clearing Custom Item Entries! ");
 
             customItems.Clear();
+            kills.Clear();
             Buying.playerEco.Clear();
         }
     }
