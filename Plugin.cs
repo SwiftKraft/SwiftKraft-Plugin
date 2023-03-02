@@ -1,6 +1,7 @@
 ﻿using CommandSystem;
 using CustomPlayerEffects;
 using InventorySystem.Items;
+using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Pickups;
 using MapGeneration.Distributors;
 using PlayerRoles;
@@ -390,6 +391,20 @@ namespace SwiftKraft
                     Buying.playerEco[plr.PlayerId] += 400;
                 else
                     Buying.playerEco.Add(plr.PlayerId, 400);
+            }
+        }
+
+        [PluginEvent(ServerEventType.PlayerEscape)]
+        public void OnPlayerEscaped(Player plr, RoleTypeId role)
+        {
+            if (Buying.IsOn)
+            {
+                plr.SendBroadcast("Escaped: +$3500", 3);
+
+                if (Buying.playerEco.ContainsKey(plr.PlayerId))
+                    Buying.playerEco[plr.PlayerId] += 3500;
+                else
+                    Buying.playerEco.Add(plr.PlayerId, 3500);
             }
         }
     }

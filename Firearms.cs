@@ -469,5 +469,77 @@ namespace SwiftKraft
 
             firearm.Status = new FirearmStatus(firearm.Status.Ammo, firearm.Status.Flags, attachments);
         }
+
+        [PluginEvent(ServerEventType.PlayerShotWeapon)]
+        public void OnShotWeapon(Player player, Firearm firearm)
+        {
+            if (!Plugin.customItems.ContainsKey(firearm.ItemSerial))
+                return;
+
+            uint attachments = 0;
+
+            switch (Plugin.customItems[player.CurrentItem.ItemSerial])
+            {
+                case "M4A1_S":
+                    attachments = 10523393;
+                    break;
+                case "M4A4":
+                    attachments = 10621473;
+                    break;
+                case "AN94":
+                    attachments = 10752769;
+                    break;
+                case "SG553":
+                    attachments = 10621700;
+                    break;
+                case "SSG08":
+                    attachments = 10757256;
+                    break;
+                case "MP5SD":
+                    attachments = 35089;
+                    break;
+                case "P90":
+                    attachments = 24849;
+                    break;
+                case "MAC_10":
+                    attachments = 5393;
+                    break;
+                case "USP":
+                    attachments = 337;
+                    break;
+                case "P2000":
+                    attachments = 2121;
+                    break;
+                case "GLOCK_17":
+                    attachments = 51;
+                    break;
+                case "CZ75":
+                    attachments = 5385;
+                    break;
+                case "DEAGLE":
+                    attachments = 594;
+                    break;
+                case "M249":
+                    attachments = 580;
+                    break;
+                case "NOVA":
+                    attachments = 1065;
+                    break;
+                case "AWP":
+                    attachments = 136228;
+                    break;
+                case "XR87":
+                    attachments = 165122;
+                    break;
+                case "ECHO_S":
+                    attachments = 136258;
+                    break;
+                case "_FUNNY_GUN":
+                    attachments = 0;
+                    break;
+            }
+
+            firearm.Status = new FirearmStatus(firearm.Status.Ammo, firearm.Status.Flags, attachments);
+        }
     }
 }
