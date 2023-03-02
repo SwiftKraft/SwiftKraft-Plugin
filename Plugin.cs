@@ -138,11 +138,9 @@ namespace SwiftKraft
                     break;
                 default:
                     if (kills[attacker.PlayerId] > 7)
-                        msg = "UNSTOPPABLE!!! ";
+                        msg = "UNSTOPPABLE!!! x" + (kills[attacker.PlayerId] - 7);
                     break;
             }
-
-            msg += $" ({kills[attacker.PlayerId]}) ";
 
             attacker.SendBroadcast("You Killed " + victim.Nickname + "! " + msg, 2, Broadcast.BroadcastFlags.Normal, true);
 
