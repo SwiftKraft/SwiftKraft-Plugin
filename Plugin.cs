@@ -106,6 +106,25 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.PlayerDeath)]
         public void OnPlayerDeath(Player victim, Player attacker, DamageHandlerBase damageHandlerBase)
         {
+            if (killTarget != 0)
+            {
+                if (victim.PlayerId == killTarget)
+                {
+                    if (attacker != null)
+                    {
+                        Log.Info("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!");
+                        foreach (Player p in Player.GetPlayers())
+                            p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!", 3, Broadcast.BroadcastFlags.Normal, false);
+                    }
+                    else
+                    {
+                        Log.Info("Kill Target: " + victim.Nickname + " Has Been Killed! ");
+                        foreach (Player p in Player.GetPlayers())
+                            p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Been Killed! ", 3, Broadcast.BroadcastFlags.Normal, false);
+                    }
+                }
+            }
+
             if (attacker == null)
                 return;
 
@@ -155,25 +174,6 @@ namespace SwiftKraft
                     Buying.playerEco[attacker.PlayerId] += 300;
                 else
                     Buying.playerEco.Add(attacker.PlayerId, 300);
-            }
-
-            if (killTarget != 0)
-            {
-                if (victim.PlayerId == killTarget)
-                {
-                    if (attacker != null)
-                    {
-                        Log.Info("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!");
-                        foreach (Player p in Player.GetPlayers())
-                            p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!", 3, Broadcast.BroadcastFlags.Normal, false);
-                    }
-                    else
-                    {
-                        Log.Info("Kill Target: " + victim.Nickname + " Has Been Killed! ");
-                        foreach (Player p in Player.GetPlayers())
-                            p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Been Killed! ", 3, Broadcast.BroadcastFlags.Normal, false);
-                    }
-                }
             }
         }
 
