@@ -111,7 +111,16 @@ namespace SwiftKraft
         public void OnPlayerDeath(Player victim, Player attacker, DamageHandlerBase damageHandlerBase)
         {
             if (attacker.PlayerId == victim.PlayerId)
+            {
+                if (killTarget != 0 && victim.PlayerId == killTarget)
+                {
+                    Log.Info("Kill Target: " + victim.Nickname + " Has Suicided!");
+                    foreach (Player p in Player.GetPlayers())
+                        p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Suicided!", 3, Broadcast.BroadcastFlags.Normal, false);
+                }
+
                 return;
+            }
 
             if (killTarget != 0)
             {
