@@ -4,6 +4,8 @@ using PlayerStatsSystem;
 using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SwiftKraft
@@ -390,10 +392,17 @@ namespace SwiftKraft
                 else
                     victim.Heal(standard.Damage * Mathf.Abs(multiplier));
 
-                attacker.ReceiveHitMarker(hitmarker);
+                attacker.ReferenceHub.StartCoroutine(HitMarker(attacker, hitmarker));
 
                 delay = false;
             }
+        }
+
+        public IEnumerator HitMarker(Player attacker, float hitmarker)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            attacker.ReceiveHitMarker(hitmarker);
         }
 
         [PluginEvent(ServerEventType.PlayerAimWeapon)]
