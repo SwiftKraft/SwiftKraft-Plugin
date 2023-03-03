@@ -110,18 +110,6 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.PlayerDeath)]
         public void OnPlayerDeath(Player victim, Player attacker, DamageHandlerBase damageHandlerBase)
         {
-            if (attacker.PlayerId == victim.PlayerId)
-            {
-                if (killTarget != 0 && victim.PlayerId == killTarget)
-                {
-                    Log.Info("Kill Target: " + victim.Nickname + " Has Suicided!");
-                    foreach (Player p in Player.GetPlayers())
-                        p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Suicided!", 3, Broadcast.BroadcastFlags.Normal, false);
-                }
-
-                return;
-            }
-
             if (killTarget != 0)
             {
                 if (victim.PlayerId == killTarget)
@@ -186,7 +174,8 @@ namespace SwiftKraft
 
             if (Buying.IsOn)
             {
-                GiveEconomy.AddEconomy(attacker, 400, "Terminated Enemy");
+                if (victim.PlayerId != attacker.PlayerId)
+                    GiveEconomy.AddEconomy(attacker, 400, "Terminated Enemy");
 
                 if (kills[attacker.PlayerId] > 1)
                 {
