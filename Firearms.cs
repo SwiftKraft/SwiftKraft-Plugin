@@ -114,6 +114,8 @@ namespace SwiftKraft
                 case "ECHO_S":
                     gunName = "ECHO-S";
                     attachments = 136258;
+                    if (firearm.Status.Ammo > 20)
+                        firearm.Status = new FirearmStatus(20, FirearmStatusFlags.MagazineInserted, attachments);
                     break;
                 case "_FUNNY_GUN":
                     gunName = "Funny Gun";
@@ -162,6 +164,16 @@ namespace SwiftKraft
                         {
                             player.AddAmmo(ItemType.Ammo9x19, (ushort)(firearm.Status.Ammo - 12));
                             firearm.Status = new FirearmStatus(12, firearm.Status.Flags, 5385);
+                        }
+                    };
+                    break;
+                case "ECHO_S":
+                    firearm.OnStatusChanged += (a, b) =>
+                    {
+                        if (b.Ammo > 20)
+                        {
+                            player.AddAmmo(ItemType.Ammo762x39, (ushort)(firearm.Status.Ammo - 20));
+                            firearm.Status = new FirearmStatus(20, firearm.Status.Flags, 136258);
                         }
                     };
                     break;
@@ -368,9 +380,6 @@ namespace SwiftKraft
                     {
                         case "AWP":
                             multiplier = 7f;
-                            break;
-                        case "SSG08":
-                            multiplier = 3f;
                             break;
                         case "XR87":
                             multiplier = 2.2f;
