@@ -120,12 +120,7 @@ namespace SwiftKraft
 
                         if (Buying.IsOn)
                         {
-                            attacker.SendBroadcast("Killed Bounty Target: +$2000", 3);
-
-                            if (Buying.playerEco.ContainsKey(attacker.PlayerId))
-                                Buying.playerEco[attacker.PlayerId] += 2000;
-                            else
-                                Buying.playerEco.Add(attacker.PlayerId, 2000);
+                            GiveEconomy.AddEconomy(attacker, 2000, "Terminated Bounty Target");
                         }
 
                         foreach (Player p in Player.GetPlayers())
@@ -185,12 +180,14 @@ namespace SwiftKraft
 
             if (Buying.IsOn)
             {
-                attacker.SendBroadcast("Kill: +$400", 3);
+                GiveEconomy.AddEconomy(attacker, 400, "Terminated Enemy");
 
-                if (Buying.playerEco.ContainsKey(attacker.PlayerId))
-                    Buying.playerEco[attacker.PlayerId] += 400;
-                else
-                    Buying.playerEco.Add(attacker.PlayerId, 400);
+                if (kills[attacker.PlayerId] > 1)
+                {
+                    int killstreakBonus = 100 * kills[attacker.PlayerId];
+
+                    GiveEconomy.AddEconomy(attacker, killstreakBonus, "Killstreak Bonus");
+                }
             }
         }
 
@@ -264,7 +261,7 @@ namespace SwiftKraft
                 }
 
                 target.Position = player.Position;
-                target.SendBroadcast("You have been summoned by " + player.Nickname, 3, Broadcast.BroadcastFlags.Normal, true);
+                target.SendBroadcast("You have been summoned by " + player.Nickname + ", protect them! ", 3, Broadcast.BroadcastFlags.Normal, true);
 
                 item.PickupDropModel.DestroySelf();
             }
@@ -338,12 +335,7 @@ namespace SwiftKraft
 
                 foreach (Player p in Player.GetPlayers())
                 {
-                    p.SendBroadcast("LCZ Decontaminating: +$3000", 3);
-
-                    if (Buying.playerEco.ContainsKey(p.PlayerId))
-                        Buying.playerEco[p.PlayerId] += 3000;
-                    else
-                        Buying.playerEco.Add(p.PlayerId, 3000);
+                    GiveEconomy.AddEconomy(p, 3000, "LCZ Decontamination Started");
                 }
             }
         }
@@ -357,24 +349,14 @@ namespace SwiftKraft
                 {
                     generators.Add(gen);
 
-                    plr.SendBroadcast("Activated Generator: +$1000", 3);
-
-                    if (Buying.playerEco.ContainsKey(plr.PlayerId))
-                        Buying.playerEco[plr.PlayerId] += 1000;
-                    else
-                        Buying.playerEco.Add(plr.PlayerId, 1000);
+                    GiveEconomy.AddEconomy(plr, 1000, "Activated Generator");
 
                     foreach (Player p in Player.GetPlayers())
                     {
                         if (!p.IsAlive || p.Role.GetFaction() != plr.Role.GetFaction())
                             continue;
 
-                        p.SendBroadcast("Team Activated Generator: +$2000", 3);
-
-                        if (Buying.playerEco.ContainsKey(p.PlayerId))
-                            Buying.playerEco[p.PlayerId] += 2000;
-                        else
-                            Buying.playerEco.Add(p.PlayerId, 2000);
+                        GiveEconomy.AddEconomy(p, 2000, "Team Activated Generator");
                     }
                 }
             }
@@ -385,12 +367,7 @@ namespace SwiftKraft
         {
             if (Buying.IsOn)
             {
-                plr.SendBroadcast("Unlocked Generator: +$400", 3);
-
-                if (Buying.playerEco.ContainsKey(plr.PlayerId))
-                    Buying.playerEco[plr.PlayerId] += 400;
-                else
-                    Buying.playerEco.Add(plr.PlayerId, 400);
+                GiveEconomy.AddEconomy(plr, 400, "Unlocked Generator");
             }
         }
 
@@ -399,12 +376,10 @@ namespace SwiftKraft
         {
             if (Buying.IsOn)
             {
-                plr.SendBroadcast("Escaped: +$3500", 3);
-
-                if (Buying.playerEco.ContainsKey(plr.PlayerId))
-                    Buying.playerEco[plr.PlayerId] += 3500;
+                if (role.GetFaction() == Faction.FoundationStaff)
+                    GiveEconomy.AddEconomy(plr, 3500, "Escaped Facility");
                 else
-                    Buying.playerEco.Add(plr.PlayerId, 3500);
+                    GiveEconomy.AddEconomy(plr, 4000, "Escaped Facility");
             }
         }
     }
