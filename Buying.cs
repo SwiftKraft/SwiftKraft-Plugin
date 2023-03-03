@@ -259,7 +259,7 @@ namespace SwiftKraft
 
                 foreach (string n in Buying.translatedItemBuys.Values)
                 {
-                    response += "- " + n + "  - $" + Buying.itemCosts[Buying.itemBuyTranslation[n]].ToString();
+                    response += "- " + n + "  - $" + Buying.itemCosts[Buying.itemBuyTranslation[n]].ToString() + "\n";
                 }
 
                 if (Player.TryGet(sender, out Player _p) && Buying.playerEco.ContainsKey(_p.PlayerId))

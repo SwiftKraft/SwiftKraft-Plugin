@@ -110,6 +110,9 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.PlayerDeath)]
         public void OnPlayerDeath(Player victim, Player attacker, DamageHandlerBase damageHandlerBase)
         {
+            if (attacker.PlayerId == victim.PlayerId)
+                return;
+
             if (killTarget != 0)
             {
                 if (victim.PlayerId == killTarget)
@@ -117,12 +120,6 @@ namespace SwiftKraft
                     if (attacker != null)
                     {
                         Log.Info("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!");
-
-                        if (Buying.IsOn)
-                        {
-                            GiveEconomy.AddEconomy(attacker, 2000, "Terminated Bounty Target");
-                        }
-
                         foreach (Player p in Player.GetPlayers())
                             p.SendBroadcast("Kill Target: " + victim.Nickname + " Has Been Killed By " + attacker.Nickname + "!", 3, Broadcast.BroadcastFlags.Normal, false);
                     }
