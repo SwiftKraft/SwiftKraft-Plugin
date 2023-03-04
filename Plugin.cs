@@ -27,7 +27,7 @@ namespace SwiftKraft
 
         public List<Scp079Generator> generators = new List<Scp079Generator>();
 
-        [PluginEntryPoint("SwiftKraft", "v1.1", "Powerful Guns", "SwiftKraft")]
+        [PluginEntryPoint("SwiftKraft", "v1.2", "Powerful Guns", "SwiftKraft")]
         public void Init()
         {
             EventManager.RegisterEvents<Plugin>(this);
@@ -69,6 +69,7 @@ namespace SwiftKraft
             RegisterBuy("_38", 1200);
             CustomItem.itemNameToItemId.Add("_FUNNY_GUN", 20);
             CustomItem.itemNameToItemId.Add("_GUARD_SPAWN", 4);
+            CustomItem.itemNameToItemId.Add("_GOLDEN_GUN", 39);
             CustomItem.itemNameToItemId.Add("_PROTO_MEDKIT", 14);
 
             #endregion
@@ -175,13 +176,13 @@ namespace SwiftKraft
             if (Buying.IsOn)
             {
                 if (victim.PlayerId != attacker.PlayerId)
-                    GiveEconomy.AddEconomy(attacker, 400, "Terminated Enemy");
+                    GiveEconomy.AddEconomy(attacker, 400, "Terminated Enemy", 3);
 
                 if (kills[attacker.PlayerId] > 1)
                 {
                     int killstreakBonus = 100 * kills[attacker.PlayerId];
 
-                    GiveEconomy.AddEconomy(attacker, killstreakBonus, "Killstreak Bonus");
+                    GiveEconomy.AddEconomy(attacker, killstreakBonus, "Killstreak Bonus", 3);
                 }
             }
         }
@@ -258,7 +259,7 @@ namespace SwiftKraft
                 target.Position = player.Position;
                 target.SendBroadcast("You have been summoned by " + player.Nickname + ", protect them! ", 3, Broadcast.BroadcastFlags.Normal, true);
 
-                item.PickupDropModel.DestroySelf();
+                customItems.Remove(item.ItemSerial);
             }
         }
 
@@ -330,7 +331,7 @@ namespace SwiftKraft
 
                 foreach (Player p in Player.GetPlayers())
                 {
-                    GiveEconomy.AddEconomy(p, 3000, "LCZ Decontamination Started");
+                    GiveEconomy.AddEconomy(p, 3000, "LCZ Decontamination Started", 4);
                 }
             }
         }
@@ -344,14 +345,14 @@ namespace SwiftKraft
                 {
                     generators.Add(gen);
 
-                    GiveEconomy.AddEconomy(plr, 1000, "Activated Generator");
+                    GiveEconomy.AddEconomy(plr, 1000, "Activated Generator", 3);
 
                     foreach (Player p in Player.GetPlayers())
                     {
                         if (!p.IsAlive || p.Role.GetFaction() != plr.Role.GetFaction())
                             continue;
 
-                        GiveEconomy.AddEconomy(p, 2000, "Team Activated Generator");
+                        GiveEconomy.AddEconomy(p, 2000, "Team Activated Generator", 2);
                     }
                 }
             }
@@ -362,7 +363,7 @@ namespace SwiftKraft
         {
             if (Buying.IsOn)
             {
-                GiveEconomy.AddEconomy(plr, 400, "Unlocked Generator");
+                GiveEconomy.AddEconomy(plr, 400, "Unlocked Generator", 3);
             }
         }
 
@@ -372,9 +373,9 @@ namespace SwiftKraft
             if (Buying.IsOn)
             {
                 if (role.GetFaction() == Faction.FoundationStaff)
-                    GiveEconomy.AddEconomy(plr, 3500, "Escaped Facility");
+                    GiveEconomy.AddEconomy(plr, 3500, "Escaped Facility", 4);
                 else
-                    GiveEconomy.AddEconomy(plr, 4000, "Escaped Facility");
+                    GiveEconomy.AddEconomy(plr, 4000, "Escaped Facility", 4);
             }
         }
     }
@@ -393,7 +394,7 @@ namespace SwiftKraft
             response =
 
 @"
-===== SwiftKraft v1.1 =====
+===== SwiftKraft v1.2 =====
 
 Plugin Made By SwiftKraft! 
 

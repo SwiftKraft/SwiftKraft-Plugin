@@ -40,12 +40,6 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.PlayerSearchedPickup)]
         public void OnPlayerSearchedPickup(Player player, ItemPickupBase itemPickupBase)
         {
-            if (Buying.IsOn && itemPickupBase.Info.ItemId == ItemType.Coin)
-            {
-                GiveEconomy.AddEconomy(player, 200, "Picked Up Coin");
-                player.RemoveItem(itemPickupBase);
-            }
-
             if (!IsOn || Plugin.customItems.ContainsKey(itemPickupBase.Info.Serial))
                 return;
 

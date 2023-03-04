@@ -92,6 +92,13 @@ namespace SwiftKraft
             if (string.IsNullOrEmpty(itemName))
                 return;
 
+            if (itemName.ToCharArray()[0] == '_' && int.TryParse(itemName.Remove(0, 1), out int i))
+            {
+                p.AddItem((ItemType)i);
+
+                return;
+            }
+
             ItemBase b = p.AddItem((ItemType)itemNameToItemId[itemName]);
 
             Plugin.customItems.Add(b.ItemSerial, itemName);

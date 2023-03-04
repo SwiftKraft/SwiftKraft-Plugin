@@ -98,7 +98,7 @@ namespace SwiftKraft
 
                 if (Player.TryGet(sender, out Player p))
                 {
-                    AddEconomy(p, i, "Admin Allowance");
+                    AddEconomy(p, i, "Admin Allowance", 3);
 
                     response = "Given $" + i.ToString() + " to " + p.Nickname + "! ";
 
@@ -133,17 +133,17 @@ namespace SwiftKraft
                 return false;
             }
 
-            AddEconomy(_p, _i, "Admin Allowance");
+            AddEconomy(_p, _i, "Admin Allowance", 3);
 
             response = "Given $" + _i.ToString() + " to " + _p.Nickname + "! ";
 
             return true;
         }
 
-        public static void AddEconomy(int id, int amount, string reason)
+        public static void AddEconomy(int id, int amount, string reason, ushort time)
         {
             if (Player.TryGet(id, out Player p))
-                p.SendBroadcast(reason + ": +$" + amount, 3);
+                p.SendBroadcast(reason + ": +$" + amount, time);
 
             if (Buying.playerEco.ContainsKey(id))
                 Buying.playerEco[id] += amount;
@@ -151,9 +151,9 @@ namespace SwiftKraft
                 Buying.playerEco.Add(id, amount);
         }
 
-        public static void AddEconomy(Player p, int amount, string reason)
+        public static void AddEconomy(Player p, int amount, string reason, ushort time)
         {
-            AddEconomy(p.PlayerId, amount, reason);
+            AddEconomy(p.PlayerId, amount, reason, time);
         }
     }
 

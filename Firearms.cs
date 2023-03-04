@@ -5,7 +5,6 @@ using PluginAPI.Core;
 using PluginAPI.Core.Attributes;
 using PluginAPI.Enums;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace SwiftKraft
@@ -86,6 +85,12 @@ namespace SwiftKraft
                     attachments = 594;
                     if (firearm.Status.Ammo > 4)
                         firearm.Status = new FirearmStatus(4, FirearmStatusFlags.MagazineInserted, attachments);
+                    break;
+                case "_GOLDEN_GUN":
+                    gunName = "EXP-1T";
+                    attachments = 585;
+                    if (firearm.Status.Ammo > 1)
+                        firearm.Status = new FirearmStatus(1, FirearmStatusFlags.MagazineInserted, attachments);
                     break;
                 case "M249":
                     gunName = "M249";
@@ -177,6 +182,16 @@ namespace SwiftKraft
                         }
                     };
                     break;
+                case "_GOLDEN_GUN":
+                    firearm.OnStatusChanged += (a, b) =>
+                    {
+                        if (b.Ammo > 1)
+                        {
+                            player.AddAmmo(ItemType.Ammo44cal, (ushort)(firearm.Status.Ammo - 1));
+                            firearm.Status = new FirearmStatus(1, firearm.Status.Flags, 585);
+                        }
+                    };
+                    break;
             }
         }
 
@@ -190,7 +205,8 @@ namespace SwiftKraft
             {
                 // Log.Info("Dealt Damage: " + standard.DealtHealthDamage + " " + standard.Damage);
 
-                victim.EffectsManager.EnableEffect<Sinkhole>(0.1f, true);
+                if (!victim.IsSCP)
+                    victim.EffectsManager.EnableEffect<Sinkhole>(0.3f, false);
 
                 if (!Plugin.customItems.ContainsKey(attacker.CurrentItem.ItemSerial) || delay)
                     return;
@@ -251,6 +267,9 @@ namespace SwiftKraft
                             case "ECHO_S":
                                 multiplier = 4.5f;
                                 break;
+                            case "_GOLDEN_GUN":
+                                multiplier = 6f;
+                                break;
                             case "_FUNNY_GUN":
                                 multiplier = 500f;
                                 break;
@@ -308,6 +327,9 @@ namespace SwiftKraft
                             case "XR87":
                                 multiplier = -0.2f;
                                 break;
+                            case "_GOLDEN_GUN":
+                                multiplier = 6f;
+                                break;
                             case "_FUNNY_GUN":
                                 multiplier = 500f;
                                 break;
@@ -359,6 +381,9 @@ namespace SwiftKraft
                             case "XR87":
                                 multiplier = -0.2f;
                                 break;
+                            case "_GOLDEN_GUN":
+                                multiplier = 6f;
+                                break;
                             case "_FUNNY_GUN":
                                 multiplier = 500f;
                                 break;
@@ -370,10 +395,7 @@ namespace SwiftKraft
                 {
                     if (Buying.IsOn)
                     {
-                        if (Buying.playerEco.ContainsKey(attacker.PlayerId))
-                            Buying.playerEco[attacker.PlayerId] += 10;
-                        else
-                            Buying.playerEco.Add(attacker.PlayerId, 10);
+                        GiveEconomy.AddEconomy(attacker, 10, "Dealt Damage To SCP", 1);
                     }
 
                     switch (Plugin.customItems[attacker.CurrentItem.ItemSerial])
@@ -382,12 +404,15 @@ namespace SwiftKraft
                             multiplier = 7f;
                             break;
                         case "XR87":
-                            multiplier = 2.2f;
+                            multiplier = 2f;
                             break;
                         case "P90":
                             multiplier = 0.3f;
                             break;
                         case "ECHO_S":
+                            multiplier = 0f;
+                            break;
+                        case "_GOLDEN_GUN":
                             multiplier = 0f;
                             break;
                         case "DEAGLE":
@@ -409,9 +434,28 @@ namespace SwiftKraft
 
         public IEnumerator HitMarker(Player attacker, float hitmarker)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
 
             attacker.ReceiveHitMarker(hitmarker);
+        }
+
+        [PluginEvent(ServerEventType.PlayerDeath)]
+        public void OnPlayerDeath(Player victim, Player attacker, DamageHandlerBase damageHandlerBase)
+        {
+            if (damageHandlerBase is FirearmDamageHandler)
+            {
+                Firearm firearm = (Firearm)attacker.CurrentItem;
+
+                if (attacker.CurrentItem != null && Plugin.customItems.ContainsKey(attacker.CurrentItem.ItemSerial))
+                {
+                    switch (Plugin.customItems[attacker.CurrentItem.ItemSerial])
+                    {
+                        case "_GOLDEN_GUN":
+                            firearm.Status = new FirearmStatus(1, firearm.Status.Flags, 585);
+                            break;
+                    }
+                }
+            }
         }
 
         [PluginEvent(ServerEventType.PlayerAimWeapon)]
@@ -479,6 +523,9 @@ namespace SwiftKraft
                     break;
                 case "ECHO_S":
                     attachments = 136258;
+                    break;
+                case "_GOLDEN_GUN":
+                    attachments = 585;
                     break;
                 case "_FUNNY_GUN":
                     attachments = 0;
@@ -551,6 +598,9 @@ namespace SwiftKraft
                     break;
                 case "ECHO_S":
                     attachments = 136258;
+                    break;
+                case "_GOLDEN_GUN":
+                    attachments = 585;
                     break;
                 case "_FUNNY_GUN":
                     attachments = 0;
