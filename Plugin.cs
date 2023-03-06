@@ -316,8 +316,6 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.GrenadeExploded)]
         public void OnGrenadeExploded(Footprint owner, Vector3 position, ItemPickupBase item)
         {
-            Log.Info($"Grenade &6{item.NetworkInfo.ItemId}&r thrown by &6{item.PreviousOwner.Nickname}&r exploded at &6{item.NetworkInfo.RelativePosition}&r");
-
             if (!customItems.ContainsKey(item.NetworkInfo.Serial))
                 return;
 
