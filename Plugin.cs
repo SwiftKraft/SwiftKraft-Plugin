@@ -28,7 +28,7 @@ namespace SwiftKraft
 
         public List<Scp079Generator> generators = new List<Scp079Generator>();
 
-        [PluginEntryPoint("SwiftKraft", "v1.2", "Powerful Guns", "SwiftKraft")]
+        [PluginEntryPoint("SwiftKraft", "v1.4", "Powerful Guns", "SwiftKraft")]
         public void Init()
         {
             EventManager.RegisterEvents<Plugin>(this);
@@ -444,7 +444,7 @@ namespace SwiftKraft
             response =
 
 @"
-===== SwiftKraft v1.2 =====
+===== SwiftKraft v1.4 =====
 
 Plugin Made By SwiftKraft! 
 
