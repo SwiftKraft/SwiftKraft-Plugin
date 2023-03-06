@@ -1,5 +1,6 @@
 ﻿using CommandSystem;
 using CustomPlayerEffects;
+using Footprinting;
 using InventorySystem.Items;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Pickups;
@@ -71,6 +72,8 @@ namespace SwiftKraft
             CustomItem.itemNameToItemId.Add("_GUARD_SPAWN", 4);
             CustomItem.itemNameToItemId.Add("_GOLDEN_GUN", 39);
             CustomItem.itemNameToItemId.Add("_PROTO_MEDKIT", 14);
+            CustomItem.itemNameToItemId.Add("_PROTO_GRENADE", 25);
+            CustomItem.itemNameToItemId.Add("_CLUSTER_GRENADE", 25);
 
             #endregion
         }
@@ -213,6 +216,12 @@ namespace SwiftKraft
                 case "_PROTO_MEDKIT":
                     message = "Equipped Prototype Medkit! ";
                     break;
+                case "_PROTO_GRENADE":
+                    message = "Equipped Prototype Grenade! ";
+                    break;
+                case "_CLUSTER_GRENADE":
+                    message = "Equipped Cluster Grenade! ";
+                    break;
             }
 
             if (!string.IsNullOrEmpty(message))
@@ -302,6 +311,47 @@ namespace SwiftKraft
             }
 
             Server.Instance.ReferenceHub.StartCoroutine(Announce(count));
+        }
+
+        [PluginEvent(ServerEventType.GrenadeExploded)]
+        public void OnGrenadeExploded(Footprint owner, Vector3 position, ItemPickupBase item)
+        {
+            Log.Info($"Grenade &6{item.NetworkInfo.ItemId}&r thrown by &6{item.PreviousOwner.Nickname}&r exploded at &6{item.NetworkInfo.RelativePosition}&r");
+
+            if (!customItems.ContainsKey(item.NetworkInfo.Serial))
+                return;
+
+            switch (customItems[item.NetworkInfo.Serial])
+            {
+                case "_PROTO_GRENADE":
+                    ItemPickup i = ItemPickup.Create(ItemType.GrenadeFlash, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    i.Spawn();
+                    i.Rigidbody.AddForceAtPosition(new Vector3(20f, 1f, 20f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    ItemPickup i2 = ItemPickup.Create(ItemType.GrenadeFlash, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    i2.Spawn();
+                    i2.Rigidbody.AddForceAtPosition(new Vector3(-20f, 1f, 20f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    ItemPickup i3 = ItemPickup.Create(ItemType.GrenadeFlash, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    i3.Spawn();
+                    i3.Rigidbody.AddForceAtPosition(new Vector3(20f, 1f, -20f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    ItemPickup i4 = ItemPickup.Create(ItemType.GrenadeFlash, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    i4.Spawn();
+                    i4.Rigidbody.AddForceAtPosition(new Vector3(-20f, 1f, -20f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    break;
+                case "_CLUSTER_GRENADE":
+                    ItemPickup ii = ItemPickup.Create(ItemType.GrenadeHE, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    ii.Spawn();
+                    ii.Rigidbody.AddForceAtPosition(new Vector3(40f, 5f, 40f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    ItemPickup ii2 = ItemPickup.Create(ItemType.GrenadeHE, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    ii2.Spawn();
+                    ii2.Rigidbody.AddForceAtPosition(new Vector3(-40f, 5f, 40f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    ItemPickup ii3 = ItemPickup.Create(ItemType.GrenadeHE, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    ii3.Spawn();
+                    ii3.Rigidbody.AddForceAtPosition(new Vector3(40f, 5f, -40f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    ItemPickup ii4 = ItemPickup.Create(ItemType.GrenadeHE, item.NetworkInfo.RelativePosition.Position, item.NetworkInfo.RelativeRotation.Value);
+                    ii4.Spawn();
+                    ii4.Rigidbody.AddForceAtPosition(new Vector3(-40f, 5f, -40f), item.NetworkInfo.RelativePosition.Position, ForceMode.Impulse);
+                    break;
+            }
         }
 
         private IEnumerator Announce(int count)
