@@ -404,7 +404,7 @@ namespace SwiftKraft
                             multiplier = 7f;
                             break;
                         case "XR87":
-                            multiplier = 2f;
+                            multiplier = 1.2f;
                             break;
                         case "P90":
                             multiplier = 0.3f;
