@@ -44,7 +44,7 @@ namespace SwiftKraft
                     break;
                 case "SG553":
                     gunName = "SG553";
-                    attachments = 10621700;
+                    attachments = 10753284;
                     if (firearm.Status.Ammo > 30)
                         firearm.Status = new FirearmStatus(30, FirearmStatusFlags.MagazineInserted, attachments);
                     break;
@@ -480,7 +480,7 @@ namespace SwiftKraft
                     attachments = 10752769;
                     break;
                 case "SG553":
-                    attachments = 10621700;
+                    attachments = 10753284;
                     break;
                 case "SSG08":
                     attachments = 10757256;
@@ -555,7 +555,7 @@ namespace SwiftKraft
                     attachments = 10752769;
                     break;
                 case "SG553":
-                    attachments = 10621700;
+                    attachments = 10753284;
                     break;
                 case "SSG08":
                     attachments = 10757256;

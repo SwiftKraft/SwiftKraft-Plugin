@@ -35,6 +35,7 @@ namespace SwiftKraft
             EventManager.RegisterEvents<Firearms>(this);
             EventManager.RegisterEvents<CustomLoadout>(this);
             EventManager.RegisterEvents<CustomItemConversion>(this);
+            EventManager.RegisterEvents<SCPBuffs>(this);
 
             #region Register Custom Items
 
