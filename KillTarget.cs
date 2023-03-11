@@ -15,6 +15,13 @@ namespace SwiftKraft
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
+			if (!sender.CheckPermission(PlayerPermissions.PlayersManagement))
+			{
+				response = "You Do Not Have Permission To Do That! Required Perm: Players Management";
+
+				return false;
+			}
+
 			if (arguments.Array.Length < 2)
 			{
 				response = "Need to provide player name or player id! Usage: \"kt <Player Name/Player ID>\"";

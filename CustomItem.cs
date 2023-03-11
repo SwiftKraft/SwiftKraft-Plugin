@@ -21,6 +21,13 @@ namespace SwiftKraft
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            if (!sender.CheckPermission(PlayerPermissions.GivingItems))
+            {
+                response = "You Do Not Have Permission To Do That! Required Perm: Giving Items";
+
+                return false;
+            }
+
             if (arguments.Array.Length < 2)
             {
                 response = "Must provide a custom item name! Usage: \"cust <Custom Item Name> [Player]\"";

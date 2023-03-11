@@ -18,6 +18,13 @@ namespace SwiftKraft
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
+			if (!sender.CheckPermission(PlayerPermissions.RoundEvents))
+            {
+				response = "You Do Not Have Permission To Do That! Required Perm: Round Events";
+
+				return false;
+            }
+
 			if (arguments.Array.Length < 2)
 			{
 				response = "Custom Item Conversion: " + CustomItemConversion.IsOn;

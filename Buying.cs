@@ -23,6 +23,13 @@ namespace SwiftKraft
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            if (!sender.CheckPermission(PlayerPermissions.RoundEvents))
+            {
+                response = "You Do Not Have Permission To Do That! Required Perm: Round Events";
+
+                return false;
+            }
+
             if (arguments.Array.Length < 2)
             {
                 response = "Buy Phase: " + IsOn;
@@ -61,6 +68,13 @@ namespace SwiftKraft
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            if (!sender.CheckPermission(PlayerPermissions.PlayersManagement))
+            {
+                response = "You Do Not Have Permission To Do That! Required Perm: Players Management";
+
+                return false;
+            }
+
             Buying.playerEco.Clear();
 
             response = "Cleared economy! ";
@@ -80,6 +94,13 @@ namespace SwiftKraft
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            if (!sender.CheckPermission(PlayerPermissions.PlayersManagement))
+            {
+                response = "You Do Not Have Permission To Do That! Required Perm: Players Management";
+
+                return false;
+            }
+
             if (arguments.Array.Length < 2)
             {
                 response = "Please provide the amount to give! ";
@@ -168,6 +189,13 @@ namespace SwiftKraft
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            if (!sender.CheckPermission(PlayerPermissions.PlayersManagement))
+            {
+                response = "You Do Not Have Permission To Do That! Required Perm: Players Management";
+
+                return false;
+            }
+
             if (arguments.Array.Length < 2)
             {
                 response = "Please provide the amount to set! ";
