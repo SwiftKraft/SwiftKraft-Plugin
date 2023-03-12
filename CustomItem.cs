@@ -1,6 +1,7 @@
 ﻿using CommandSystem;
 using InventorySystem.Items;
 using InventorySystem.Items.Firearms;
+using PlayerRoles;
 using PluginAPI.Core;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace SwiftKraft
 
         public string[] Aliases { get; } = new string[] { "custitem", "citem", "cust" };
 
-        public string Description { get; } = "Gives custom item, not providing a player will give it to the command executor. Usage: \"cust <Custom Item Name> [Player Name/Player ID]\"";
+        public string Description { get; } = "Gives custom item, not providing a player will give it to the command executor. Usage: \"cust <Custom Item Name> [Player Name/Player ID]\". Can use @ALL, @HUMAN, @SCP, @MTF, @CI in replacement for player";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
@@ -51,6 +52,53 @@ namespace SwiftKraft
                     response = "No custom item has been found with name " + arguments.Array[1].ToUpper();
 
                     return false;
+                }
+            }
+
+            if (arguments.Array[2].ToCharArray()[0] == '@')
+            {
+                switch (arguments.Array[2].ToUpper())
+                {
+                    case "@ALL":
+                        foreach (Player _p in Player.GetPlayers())
+                        {
+                            if (_p.IsAlive)
+                                AddCustomItem(_p, arguments.Array[1].ToUpper());
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Alive Players. ";
+                        return false;
+                    case "@HUMAN":
+                        foreach (Player _p in Player.GetPlayers())
+                        {
+                            if (_p.IsAlive && !_p.IsSCP)
+                                AddCustomItem(_p, arguments.Array[1].ToUpper());
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Humans. ";
+                        return false;
+                    case "@SCP":
+                        foreach (Player _p in Player.GetPlayers())
+                        {
+                            if (_p.IsAlive && _p.Role.GetFaction() == Faction.SCP)
+                                AddCustomItem(_p, arguments.Array[1].ToUpper());
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all SCPs. ";
+                        return false;
+                    case "@MTF":
+                        foreach (Player _p in Player.GetPlayers())
+                        {
+                            if (_p.IsAlive && _p.Role.GetFaction() == Faction.FoundationStaff)
+                                AddCustomItem(_p, arguments.Array[1].ToUpper());
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Foundation Forces. ";
+                        return false;
+                    case "@CI":
+                        foreach (Player _p in Player.GetPlayers())
+                        {
+                            if (_p.IsAlive && _p.Role.GetFaction() == Faction.FoundationEnemy)
+                                AddCustomItem(_p, arguments.Array[1].ToUpper());
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Chaos Forces. ";
+                        return false;
                 }
             }
 
