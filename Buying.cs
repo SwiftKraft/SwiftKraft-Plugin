@@ -1,4 +1,5 @@
 ﻿using CommandSystem;
+using PlayerRoles;
 using PluginAPI.Core;
 using System;
 using System.Collections.Generic;
@@ -147,6 +148,53 @@ namespace SwiftKraft
                 return false;
             }
 
+            if (arguments.Array[2].ToCharArray()[0] == '@')
+            {
+                switch (arguments.Array[2].ToUpper())
+                {
+                    case "@ALL":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive)
+                                AddEconomy(__p, _i, "Admin Allowance", 3);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Alive Players. ";
+                        return false;
+                    case "@HUMAN":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && !__p.IsSCP)
+                                AddEconomy(__p, _i, "Admin Allowance", 3);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Humans. ";
+                        return false;
+                    case "@SCP":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && __p.Role.GetFaction() == Faction.SCP)
+                                AddEconomy(__p, _i, "Admin Allowance", 3);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all SCPs. ";
+                        return false;
+                    case "@MTF":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && __p.Role.GetFaction() == Faction.FoundationStaff)
+                                AddEconomy(__p, _i, "Admin Allowance", 3);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Foundation Forces. ";
+                        return false;
+                    case "@CI":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && __p.Role.GetFaction() == Faction.FoundationEnemy)
+                                AddEconomy(__p, _i, "Admin Allowance", 3);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Chaos Forces. ";
+                        return false;
+                }
+            }
+
             if (!Player.TryGet(id, out _p))
             {
                 response = "No player found with id: " + arguments.Array[2] + "! ";
@@ -214,10 +262,7 @@ namespace SwiftKraft
 
                 if (Player.TryGet(sender, out Player p))
                 {
-                    if (Buying.playerEco.ContainsKey(p.PlayerId))
-                        Buying.playerEco[p.PlayerId] = i;
-                    else
-                        Buying.playerEco.Add(p.PlayerId, i);
+                    OverrideEconomy(p, i);
 
                     response = "Set money for " + p.Nickname + " to $" + i.ToString() + "! ";
 
@@ -245,6 +290,53 @@ namespace SwiftKraft
                 return false;
             }
 
+            if (arguments.Array[2].ToCharArray()[0] == '@')
+            {
+                switch (arguments.Array[2].ToUpper())
+                {
+                    case "@ALL":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive)
+                                OverrideEconomy(__p, _i);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Alive Players. ";
+                        return false;
+                    case "@HUMAN":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && !__p.IsSCP)
+                                OverrideEconomy(__p, _i);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Humans. ";
+                        return false;
+                    case "@SCP":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && __p.Role.GetFaction() == Faction.SCP)
+                                OverrideEconomy(__p, _i);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all SCPs. ";
+                        return false;
+                    case "@MTF":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && __p.Role.GetFaction() == Faction.FoundationStaff)
+                                OverrideEconomy(__p, _i);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Foundation Forces. ";
+                        return false;
+                    case "@CI":
+                        foreach (Player __p in Player.GetPlayers())
+                        {
+                            if (__p.IsAlive && __p.Role.GetFaction() == Faction.FoundationEnemy)
+                                OverrideEconomy(__p, _i);
+                        }
+                        response = "Giving " + arguments.Array[1].ToUpper() + " to all Chaos Forces. ";
+                        return false;
+                }
+            }
+
             if (!Player.TryGet(id, out _p))
             {
                 response = "No player found with id: " + arguments.Array[2] + "! ";
@@ -252,14 +344,19 @@ namespace SwiftKraft
                 return false;
             }
 
-            if (Buying.playerEco.ContainsKey(_p.PlayerId))
-                Buying.playerEco[_p.PlayerId] = _i;
-            else
-                Buying.playerEco.Add(_p.PlayerId, _i);
+            OverrideEconomy(_p, _i);
 
             response = "Set money for " + _p.Nickname + " to $" + _i.ToString() + "! ";
 
             return true;
+        }
+
+        public void OverrideEconomy(Player p, int amount)
+        {
+            if (Buying.playerEco.ContainsKey(p.PlayerId))
+                Buying.playerEco[p.PlayerId] = amount;
+            else
+                Buying.playerEco.Add(p.PlayerId, amount);
         }
     }
 
