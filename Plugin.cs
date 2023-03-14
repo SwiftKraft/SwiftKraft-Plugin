@@ -28,7 +28,7 @@ namespace SwiftKraft
 
         public List<Scp079Generator> generators = new List<Scp079Generator>();
 
-        [PluginEntryPoint("SwiftKraft", "v1.5", "Powerful Guns", "SwiftKraft")]
+        [PluginEntryPoint("SwiftKraft", "v1.6", "Powerful Guns", "SwiftKraft")]
         public void Init()
         {
             CustomItemConversion.IsOn = true;
@@ -43,8 +43,8 @@ namespace SwiftKraft
 
             RegisterItem("M4A1_S", ItemType.GunE11SR, 2900);
             RegisterItem("M4A4", ItemType.GunE11SR, 2900);
-            RegisterItem("AN94", ItemType.GunE11SR, 2900);
-            RegisterItem("SG553", ItemType.GunE11SR, 3100);
+            RegisterItem("AN94", ItemType.GunE11SR, 3000);
+            RegisterItem("SG553", ItemType.GunE11SR, 3000);
             RegisterItem("SSG08", ItemType.GunE11SR, 1150);
             RegisterItem("USP", ItemType.GunCOM18, 500);
             RegisterItem("P2000", ItemType.GunCOM18, 550);
@@ -445,7 +445,7 @@ namespace SwiftKraft
             response =
 
 @"
-===== SwiftKraft v1.5 =====
+===== SwiftKraft v1.6 =====
 
 Plugin Made By SwiftKraft! 
 
@@ -455,9 +455,11 @@ Adds custom items and weapons to the game!
 
 RA Commands: 
 
+Targeters: @ALL, @HUMAN, @SCP, @MTF, @CI
+
 - swiftkraft - Shows this message <3. Aliases: skabout, swftkft.
 - listcustomitem - Lists all registered custom items. Aliases: custlist, clist.
-- customitem <Custom Item Name> [Player Name/Player ID] - Gives custom item to you or a player. Aliases: custitem, citem, cust. Targeters: @ALL, @HUMAN, @SCP, @MTF, @CI
+- customitem <Custom Item Name> [Player Name/Player ID] - Gives custom item to you or a player. Aliases: custitem, citem, cust. 
 - killtarget <Player Name/Player ID> - Sets kill target, killer of kill target will be broadcasted when kill target dies. Aliases: ktarget, target, kt.
 - conversion <1/0> - Turns on or off for conversion of custom items (spawn loadouts and pickups). Aliases: conv, cnvs, cv.
 - attachments - Displays the attachment combination serial number for your current weapon, mainly for ease of adding new weapons. Aliases: att, atch.
