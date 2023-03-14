@@ -28,7 +28,7 @@ namespace SwiftKraft
 
         public List<Scp079Generator> generators = new List<Scp079Generator>();
 
-        [PluginEntryPoint("SwiftKraft", "v1.6", "Powerful Guns", "SwiftKraft")]
+        [PluginEntryPoint("SwiftKraft", "v1.7", "Powerful Guns", "SwiftKraft")]
         public void Init()
         {
             CustomItemConversion.IsOn = true;
@@ -234,6 +234,18 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.PlayerDropItem)]
         public void OnPlayerDropItem(Player player, ItemBase item)
         {
+            if (Buying.IsOn)
+            {
+                if (item.Category == ItemCategory.Armor)
+                {
+                    player.SetAmmo(ItemType.Ammo9x19, 0);
+                    player.SetAmmo(ItemType.Ammo762x39, 0);
+                    player.SetAmmo(ItemType.Ammo556x45, 0);
+                    player.SetAmmo(ItemType.Ammo44cal, 0);
+                    player.SetAmmo(ItemType.Ammo12gauge, 0);
+                }
+            }
+
             if (!customItems.ContainsKey(item.ItemSerial))
                 return;
 
@@ -445,7 +457,7 @@ namespace SwiftKraft
             response =
 
 @"
-===== SwiftKraft v1.6 =====
+===== SwiftKraft v1.7 =====
 
 Plugin Made By SwiftKraft! 
 

@@ -428,11 +428,11 @@ namespace SwiftKraft
 
                         CustomItem.AddCustomItem(p, Buying.itemBuyTranslation[arguments.Array[1].ToUpper()]);
 
-                        p.AddAmmo(ItemType.Ammo9x19, 200);
-                        p.AddAmmo(ItemType.Ammo556x45, 200);
-                        p.AddAmmo(ItemType.Ammo12gauge, 200);
-                        p.AddAmmo(ItemType.Ammo762x39, 200);
-                        p.AddAmmo(ItemType.Ammo44cal, 200);
+                        p.SetAmmo(ItemType.Ammo9x19, (ushort)p.GetAmmoLimit(ItemType.Ammo9x19));
+                        p.SetAmmo(ItemType.Ammo762x39, (ushort)p.GetAmmoLimit(ItemType.Ammo762x39));
+                        p.SetAmmo(ItemType.Ammo556x45, (ushort)p.GetAmmoLimit(ItemType.Ammo556x45));
+                        p.SetAmmo(ItemType.Ammo44cal, (ushort)p.GetAmmoLimit(ItemType.Ammo44cal));
+                        p.SetAmmo(ItemType.Ammo12gauge, (ushort)p.GetAmmoLimit(ItemType.Ammo12gauge));
 
                         response = "Purchased " + Buying.translatedItemBuys[Buying.itemBuyTranslation[arguments.Array[1].ToUpper()]] + "! \nCurrent Money: $" + Buying.playerEco[p.PlayerId];
 
