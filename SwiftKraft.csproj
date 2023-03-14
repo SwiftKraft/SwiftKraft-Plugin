@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Attachments.cs" />
     <Compile Include="Buying.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="ListCustomItem.cs" />
     <Compile Include="Conversion.cs" />
     <Compile Include="CustomItemConversion.cs" />

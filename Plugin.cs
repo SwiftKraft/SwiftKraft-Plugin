@@ -2,7 +2,6 @@
 using CustomPlayerEffects;
 using Footprinting;
 using InventorySystem.Items;
-using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Pickups;
 using MapGeneration.Distributors;
 using PlayerRoles;
@@ -22,16 +21,19 @@ namespace SwiftKraft
 {
     public class Plugin
     {
+        [PluginConfig]
+        public Config config;
+
         public static readonly Dictionary<ushort, string> customItems = new Dictionary<ushort, string>();
         public static readonly Dictionary<int, int> kills = new Dictionary<int, int>();
         public static int killTarget;
 
         public List<Scp079Generator> generators = new List<Scp079Generator>();
 
-        [PluginEntryPoint("SwiftKraft", "v1.7", "Powerful Guns", "SwiftKraft")]
+        [PluginEntryPoint("SwiftKraft", "v1.8", "Powerful Guns", "SwiftKraft")]
         public void Init()
         {
-            CustomItemConversion.IsOn = true;
+            CustomItemConversion.IsOn = config.AutoConversion;
 
             EventManager.RegisterEvents<Plugin>(this);
             EventManager.RegisterEvents<Firearms>(this);
@@ -179,18 +181,16 @@ namespace SwiftKraft
 
             attacker.ReferenceHub.StartCoroutine(KillCounter(attacker.PlayerId));
 
-            if (Buying.IsOn)
+            if (victim.PlayerId != attacker.PlayerId)
+                GiveEconomy.AddEconomy(attacker, 400, "Terminated Enemy", 3);
+
+            if (kills[attacker.PlayerId] > 1)
             {
-                if (victim.PlayerId != attacker.PlayerId)
-                    GiveEconomy.AddEconomy(attacker, 400, "Terminated Enemy", 3);
+                int killstreakBonus = 100 * kills[attacker.PlayerId];
 
-                if (kills[attacker.PlayerId] > 1)
-                {
-                    int killstreakBonus = 100 * kills[attacker.PlayerId];
-
-                    GiveEconomy.AddEconomy(attacker, killstreakBonus, "Killstreak Bonus", 3);
-                }
+                GiveEconomy.AddEconomy(attacker, killstreakBonus, "Killstreak Bonus", 3);
             }
+
         }
 
         public IEnumerator KillCounter(int atk)
@@ -388,21 +388,18 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.LczDecontaminationStart)]
         public void OnLczDecontaminationStarts()
         {
-            if (Buying.IsOn)
-            {
-                Log.Info("Started LCZ Decontamination. Giving Economy. ");
+            Log.Info("Started LCZ Decontamination. Giving Economy. ");
 
-                foreach (Player p in Player.GetPlayers())
-                {
-                    GiveEconomy.AddEconomy(p, 3000, "LCZ Decontamination Started", 4);
-                }
+            foreach (Player p in Player.GetPlayers())
+            {
+                GiveEconomy.AddEconomy(p, 3000, "LCZ Decontamination Started", 4);
             }
         }
 
         [PluginEvent(ServerEventType.PlayerActivateGenerator)]
         public void OnPlayerActivateGenerator(Player plr, Scp079Generator gen)
         {
-            if (Buying.IsOn && !plr.IsSCP)
+            if (!plr.IsSCP)
             {
                 if (!generators.Contains(gen))
                 {
@@ -424,22 +421,16 @@ namespace SwiftKraft
         [PluginEvent(ServerEventType.PlayerUnlockGenerator)]
         public void OnUnlockGenerator(Player plr, Scp079Generator generator)
         {
-            if (Buying.IsOn)
-            {
-                GiveEconomy.AddEconomy(plr, 400, "Unlocked Generator", 3);
-            }
+            GiveEconomy.AddEconomy(plr, 400, "Unlocked Generator", 3);
         }
 
         [PluginEvent(ServerEventType.PlayerEscape)]
         public void OnPlayerEscaped(Player plr, RoleTypeId role)
         {
-            if (Buying.IsOn)
-            {
-                if (role.GetFaction() == Faction.FoundationStaff)
-                    GiveEconomy.AddEconomy(plr, 3500, "Escaped Facility", 4);
-                else
-                    GiveEconomy.AddEconomy(plr, 4000, "Escaped Facility", 4);
-            }
+            if (role.GetFaction() == Faction.FoundationStaff)
+                GiveEconomy.AddEconomy(plr, 3500, "Escaped Facility", 4);
+            else
+                GiveEconomy.AddEconomy(plr, 4000, "Escaped Facility", 4);
         }
     }
 
@@ -457,7 +448,7 @@ namespace SwiftKraft
             response =
 
 @"
-===== SwiftKraft v1.7 =====
+===== SwiftKraft v1.8 =====
 
 Plugin Made By SwiftKraft! 
 
@@ -475,7 +466,7 @@ Targeters: @ALL, @HUMAN, @SCP, @MTF, @CI
 - killtarget <Player Name/Player ID> - Sets kill target, killer of kill target will be broadcasted when kill target dies. Aliases: ktarget, target, kt.
 - conversion <1/0> - Turns on or off for conversion of custom items (spawn loadouts and pickups). Aliases: conv, cnvs, cv.
 - attachments - Displays the attachment combination serial number for your current weapon, mainly for ease of adding new weapons. Aliases: att, atch.
-- allowbuy <1/0> - Turns on and off economy and purchasing of weapons through the console. Aliases: buy, allowb.
+- allowbuy <1/0> - Turns on and off purchasing of weapons through the console. Aliases: buy, allowb.
 - cleareconomy - Clears everyone's money. Aliases: cleareco, cleco.
 - giveeconomy <Integer> [Player Name/Player ID] - Gives you or a player money. Aliases: giveeco, geco.
 - seteconomy <Integer> [Player Name/Player ID] - Sets you or a player's money. Aliases: seteco, seco.

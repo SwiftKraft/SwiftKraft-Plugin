@@ -59,6 +59,48 @@ namespace SwiftKraft
     }
 
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
+    public class Eco : ICommand
+    {
+        public string Command { get; } = "economy";
+
+        public string[] Aliases { get; } = new string[] { "eco" };
+
+        public string Description { get; } = "Checks economy for a player. Usage: \"eco <Player Name/Player ID>\"";
+
+        public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+        {
+            if(arguments.Array.Length < 2)
+            {
+                response = "Need to provide player name or player id! Usage: \"eco <Player Name/Player ID>\"";
+                return false;
+            }
+
+            if (Player.TryGetByName(arguments.Array[1], out Player p))
+            {
+                if (Buying.playerEco.ContainsKey(p.PlayerId))
+                    response = p.Nickname + ": $" + Buying.playerEco[p.PlayerId];
+                else
+                    response = p.Nickname + ": $0";
+
+                return true;
+            }
+            else if (int.TryParse(arguments.Array[1], out int i) && Player.TryGet(i, out Player _p))
+            {
+                if (Buying.playerEco.ContainsKey(_p.PlayerId))
+                    response = _p.Nickname + ": $" + Buying.playerEco[_p.PlayerId];
+                else
+                    response = _p.Nickname + ": $0";
+
+                return true;
+            }
+
+            response = "No player was found with name/id: " + arguments.Array[1];
+
+            return false;
+        }
+    }
+
+    [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class ClearEconomy : ICommand
     {
         public string Command { get; } = "cleareconomy";
@@ -467,13 +509,6 @@ namespace SwiftKraft
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (!Buying.IsOn)
-            {
-                response = "Buying is disabled! ";
-
-                return false;
-            }
-
             if (Player.TryGet(sender, out Player _p) && Buying.playerEco.ContainsKey(_p.PlayerId))
                 response = "\nCurrent money: $" + Buying.playerEco[_p.PlayerId];
             else
